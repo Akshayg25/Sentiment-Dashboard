@@ -1,0 +1,27 @@
+import streamlit as st
+import pickle
+
+# Load the saved model and vectorizer
+with open('notebook/sentiment_model.pkl', 'rb') as f:
+    model = pickle.load(f)
+
+with open('notebook/vectorizer.pkl', 'rb') as f:
+    vectorizer = pickle.load(f)
+
+# Streamlit app UI
+st.title("Sentiment Analysis Dashboard")
+st.write("Enter a customer review and get sentiment prediction.")
+
+# Text input from user
+user_input = st.text_area("Enter review here:")
+
+if st.button("Predict Sentiment"):
+    if user_input.strip() == "":
+        st.warning("Please enter a review to analyze.")
+    else:
+        # Vectorize user input
+        input_vector = vectorizer.transform([user_input])
+        # Predict sentiment
+        prediction = model.predict(input_vector)[0]
+        sentiment = "Positive 😊" if prediction == 1 else "Negative 😞"
+        st.success(f"Predicted Sentiment: {sentiment}")
